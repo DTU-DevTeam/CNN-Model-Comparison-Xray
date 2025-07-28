@@ -1,27 +1,27 @@
-# [cite_start]Research and Comparison of CNN Models (U-Net, YOLO) for Pathology Diagnosis via X-ray Imagery 
+## Research and Comparison of CNN Models (U-Net, YOLO) for Pathology Diagnosis via X-ray Imagery 
 
-[cite_start]**Version:** 1.0 [cite: 3]
+**Version:** 1.0 [3]
 
-[cite_start]**Executing Team:** Group 4 – SIC 2025 [cite: 4]
+**Executing Team:** Group 4 – SIC 2025 [4]
 
 ---
 
 ## 📖 Project Summary
 
-[cite_start]This project, “Research and Comparison of CNN Models (U-Net, YOLO) for Pathology Diagnosis via X-ray Imagery,” is a strategic Research and Development (R&D) initiative.  [cite_start]The primary goal is to identify the optimal technology platform for our company's future line of intelligent medical products. 
+This project, “Research and Comparison of CNN Models (U-Net, YOLO) for Pathology Diagnosis via X-ray Imagery,” is a strategic Research and Development (R&D) initiative. The primary goal is to identify the optimal technology platform for our company's future line of intelligent medical products. 
 
-[cite_start]The final deliverable will be a data-driven technology recommendation and a functional prototype software. [cite: 8]
+The final deliverable will be a data-driven technology recommendation and a functional prototype software. [8]
 
 ## 🎯 Core Objective
 
-[cite_start]The main objective is to complete the research, comparison, and selection of the optimal CNN model architecture between U-Net and YOLO (and their variants). [cite: 12] [cite_start]This will be done to build an effective prototype for diagnosing two common pathologies on chest X-rays: detecting pulmonary nodules and segmenting pneumonia. [cite: 12]
+The main objective is to complete the research, comparison, and selection of the optimal CNN model architecture between U-Net and YOLO (and their variants). [12] This will be done to build an effective prototype for diagnosing two common pathologies on chest X-rays: detecting pulmonary nodules and segmenting pneumonia. [12]
 
 ## 🔬 Methodology & Hypotheses
 
 Our research is guided by two central hypotheses:
 
-* [cite_start]**Hypothesis 1: YOLO for Rapid Screening**: We hypothesize that YOLO's architecture (e.g., YOLOv8) is best suited for the rapid detection of discrete objects like pulmonary nodules, prioritizing speed (FPS) and high mAP for mass screening applications. [cite: 18, 19, 20, 21]
-* [cite_start]**Hypothesis 2: U-Net for Precise Analysis**: We hypothesize that U-Net's architecture (e.g., U-Net++) is superior for accurately segmenting diffuse conditions like pneumonia, where boundary accuracy (measured by Dice/IoU) is critical for assessing the extent of the disease. [cite: 22, 23, 24, 25]
+* **Hypothesis 1: YOLO for Rapid Screening**: We hypothesize that YOLO's architecture (e.g., YOLOv8) is best suited for the rapid detection of discrete objects like pulmonary nodules, prioritizing speed (FPS) and high mAP for mass screening applications. [18, 19, 20, 21]
+* **Hypothesis 2: U-Net for Precise Analysis**: We hypothesize that U-Net's architecture (e.g., U-Net++) is superior for accurately segmenting diffuse conditions like pneumonia, where boundary accuracy (measured by Dice/IoU) is critical for assessing the extent of the disease. [22, 23, 24, 25]
 
 ## 🛠️ Technology Stack
 
