@@ -65,6 +65,7 @@ npm install
 # Run the development server (if applicable)
 npm run dev
 ```
+---
 
 ## 📈 Project Status
 
@@ -80,6 +81,35 @@ npm run dev
 
 For more information, please contact the executing team: **Group 4 – SIC 2025**
 
+---
+
+## 📎 References
+
+**1.** RSNA Pneumonia Detection Challenge (Kaggle)
+
+---
+
 ## 📄 License
+
+This project is licensed under the **MIT License**.
+
+You are free to:
+
+- ✅ Use
+- ✅ Copy
+- ✅ Modify
+- ✅ Merge
+- ✅ Publish
+- ✅ Distribute
+- ✅ Sublicense
+- ✅ Sell copies of the software
+
+**Under the following conditions:**
+
+- The above rights are granted **only if** the original license and copyright
+  notice are included in all copies or substantial portions of the software.
+- The software is provided **“as is”**, without warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose, and noninfringement.
+
+> 🔒 Please ensure compliance with external dataset licenses (NIH, RSNA, LUNA16, etc.) before redistribution.
 
 ---
