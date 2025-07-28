@@ -1,6 +1,7 @@
 # [cite_start]Research and Comparison of CNN Models (U-Net, YOLO) for Pathology Diagnosis via X-ray Imagery 
 
 [cite_start]**Version:** 1.0 [cite: 3]
+
 [cite_start]**Executing Team:** Group 4 – SIC 2025 [cite: 4]
 
 ---
