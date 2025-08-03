@@ -50,3 +50,10 @@
     stroke-dashoffset: 1000;
   }
 }
+
+.loadingText {
+  color: #e2e8f0;
+  font-size: 1rem;
+  margin-top: 1rem;
+  font-weight: 300;
+}

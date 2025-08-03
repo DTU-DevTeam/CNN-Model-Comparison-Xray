@@ -1,0 +1,59 @@
+.greetingContainer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-right: 1rem;
+}
+
+.greetingText {
+  font-family: "Oxanium", sans-serif;
+  position: absolute;
+  right: 330px;
+  font-size: 1.2rem;
+  color: #ffffff;
+  font-weight: 500;
+  white-space: nowrap;
+  min-height: 1.2em;
+  display: flex;
+  align-items: center;
+  user-select: none;
+}
+
+.cursor {
+  color: #2563eb;
+  font-weight: 600;
+  animation: blink 1s infinite;
+  margin-left: 2px;
+}
+
+@keyframes blink {
+  0%,
+  50% {
+    opacity: 1;
+  }
+  51%,
+  100% {
+    opacity: 0;
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .greetingText {
+    font-size: 0.9rem;
+  }
+
+  .greetingContainer {
+    margin-right: 0.75rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .greetingText {
+    font-size: 0.8rem;
+  }
+
+  .greetingContainer {
+    margin-right: 0.5rem;
+  }
+}

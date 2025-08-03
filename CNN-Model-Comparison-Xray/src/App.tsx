@@ -1,11 +1,22 @@
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import IntroPage from './pages/IntroPage';
+import HomePage from './pages/HomePage';
+import AboutProjectPage from './pages/AboutProjectPage';
+import ContactUsPage from './pages/ContactUsPage';
+import RDTeamPage from './pages/RDTeamPage';
 import './App.css';
 
 function App() {
   return (
-    <div className="App">
-      <IntroPage />
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<IntroPage />} />
+        <Route path="/home" element={<HomePage />} />
+        <Route path="/about-project" element={<AboutProjectPage />} />
+        <Route path="/contact-us" element={<ContactUsPage />} />
+        <Route path="/rd-team" element={<RDTeamPage />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 

@@ -10,6 +10,7 @@ const IntroPage: React.FC = () => {
   const [showTitle, setShowTitle] = useState(false);
   const [showSocialButtons, setShowSocialButtons] = useState(false);
   const [showContent, setShowContent] = useState(false);
+  const [introComplete, setIntroComplete] = useState(false);
 
   useEffect(() => {
     // Start the animation sequence
@@ -34,6 +35,16 @@ const IntroPage: React.FC = () => {
     }
   }, [showTitle]);
 
+  useEffect(() => {
+    if (showContent) {
+      // Wait for fade out animation to complete (0.8s) before showing HomePage
+      const timer = setTimeout(() => {
+        setIntroComplete(true);
+      }, 800);
+      return () => clearTimeout(timer);
+    }
+  }, [showContent]);
+
   const handleSocialClick = (platform: string) => {
     const urls = {
       github: 'https://github.com/DTU-DevTeam/',
@@ -48,7 +59,7 @@ const IntroPage: React.FC = () => {
   const [typingForward, setTypingForward] = useState(true);
 
   useEffect(() => {
-    if (!showTitle || showContent) return;
+    if (!showTitle || introComplete) return;
     let currentIndex = 0;
     let interval: ReturnType<typeof setInterval>;
     let timeout: ReturnType<typeof setTimeout>;
@@ -82,13 +93,13 @@ const IntroPage: React.FC = () => {
       clearInterval(interval);
       clearTimeout(timeout);
     };
-  }, [showTitle, typingForward, showContent]);
+  }, [showTitle, typingForward, introComplete]);
 
   return (
     <>
       {/* Particle Cursor & Cursor Ripple Animation */}
-      <ParticleCursor isActive={!showContent} />
-      <CursorRipple isActive={!showContent} />
+      <ParticleCursor isActive={!introComplete} />
+      <CursorRipple isActive={!introComplete} />
       
       {/* Intro Animation Section */}
       <div className={`${styles.introSection} ${showContent ? styles.fadeOut : ''}`}>
@@ -130,7 +141,7 @@ const IntroPage: React.FC = () => {
       </div>
 
       {/* HomePage (shown after intro animation completes) */}
-      {showContent && <HomePage />}
+      {introComplete && <HomePage />}
     </>
   );
 };
