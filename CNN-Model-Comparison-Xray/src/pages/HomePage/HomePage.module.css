@@ -105,7 +105,7 @@
   border: 3px solid #0a07a3;
   box-shadow: 0 10px 25px rgba(93, 159, 225, 0.3);
   cursor: pointer;
-  z-index: 1000;
+  z-index: 998;
   transition: all 0.3s ease;
 }
 

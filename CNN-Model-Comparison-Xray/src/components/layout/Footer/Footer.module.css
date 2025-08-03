@@ -1,0 +1,218 @@
+.footer {
+  background-color: #1f2937;
+  color: #d1d5db;
+  padding: 4rem 2rem 2rem;
+  width: 100%;
+}
+
+.footerContent {
+  font-family: "Oxanium", sans-serif;
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 2rem;
+}
+
+.footerColumn {
+  flex: 1;
+  left: 100px;
+  min-width: 250px;
+}
+
+.footerLogo {
+  margin-bottom: 1rem;
+}
+
+.footerLogo img {
+  width: 250px;
+  height: auto;
+  margin-top: -4rem;
+  margin-bottom: -2rem;
+}
+
+.footerDescription {
+  font-size: 0.9rem;
+  line-height: 1.6;
+  text-align: justify;
+  max-width: 460px;
+  margin-bottom: 1rem;
+}
+
+.footerTitle1 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #ffffff;
+  margin-bottom: 1.5rem;
+  text-decoration: underline;
+  text-underline-offset: 10px;
+  text-decoration-color: #00bfff;
+}
+
+.footerTitle2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #ffffff;
+  margin-bottom: 1.5rem;
+  margin-left: 5.5rem;
+  text-decoration: underline;
+  text-underline-offset: 10px;
+  text-decoration-color: #00bfff;
+}
+
+.footerTitle3 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #ffffff;
+  margin-bottom: 1.5rem;
+  margin-left: 4.5rem;
+  text-decoration: underline;
+  text-underline-offset: 10px;
+  text-decoration-color: #00bfff;
+}
+
+.footerTitle4 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #ffffff;
+  margin-bottom: 1.5rem;
+  margin-left: 4.5rem;
+  text-decoration: underline;
+  text-underline-offset: 10px;
+  text-decoration-color: #00bfff;
+}
+
+.followUsRow {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.followUsRow .socialIcons {
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 1.4rem;
+  font-size: 1.5rem;
+}
+
+.followUsRow .socialIcons a {
+  color: #d1d5db;
+  transition: all 0.3s ease;
+}
+
+.footerLinks ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footerLinks li {
+  margin-bottom: 0.75rem;
+  margin-left: 5.5rem;
+}
+
+.footerLinks a {
+  color: #d1d5db;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.footerStartAnalysis {
+  font-family: "Orbitron", sans-serif;
+  background: rgba(0, 38, 255, 0.6);
+  backdrop-filter: blur(15px);
+  border: 1px solid rgba(40, 97, 147, 0.3);
+  color: #ffffff;
+  padding: 10px 20px;
+  border-radius: 5px;
+}
+
+.footerStartAnalysis:hover {
+  background: rgba(2, 15, 85, 0.8);
+  backdrop-filter: blur(15px);
+  border: 1px solid rgba(40, 97, 147, 0.3);
+  color: #ffffff;
+}
+
+.footerLinks a:hover {
+  color: var(--primary-color);
+}
+
+.socialIcons {
+  display: flex;
+  gap: 1.5rem;
+  font-size: 1.5rem;
+}
+
+.socialIcons a {
+  color: #d1d5db;
+  transition: all 0.3s ease;
+}
+
+.githubIcon:hover {
+  color: #333333 !important;
+}
+
+.linkedinIcon:hover {
+  color: #0077b5 !important;
+}
+
+.instagramIcon:hover {
+  background: linear-gradient(45deg, #f58529, #dd2a7b, #8134af, #515bd4);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+}
+
+.achievementImages {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-left: 4.5rem;
+}
+
+.achievementImages img {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 2px solid #00bfff;
+  transition: transform 0.3s ease;
+}
+
+.achievementImages img:hover {
+  transform: scale(1.1);
+}
+
+.aiModels {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-left: 4.5rem;
+}
+
+.aiModels img {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 2px solid #00bfff;
+  transition: transform 0.3s ease;
+}
+
+.aiModels img:hover {
+  transform: scale(1.1);
+}
+
+.footerBottom {
+  font-family: "Oxanium", sans-serif;
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 1px solid #374151;
+  text-align: center;
+  font-size: 0.875rem;
+  color: rgb(156, 163, 175, 0.2);
+  user-select: none;
+}

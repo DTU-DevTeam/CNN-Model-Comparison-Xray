@@ -1,11 +1,14 @@
 import React, { useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styles from './HomePage.module.css';
 import Header from '../../components/layout/Header';
+import Footer from '../../components/layout/Footer';
 import { MouseScrollIcon } from '../../components/ui/Icons';
 import MainVideo from '../../assets/FuturisticXRay.mp4';
 import SubVideo from '../../assets/FuturisticXRay_mini.mp4';
 
 const HomePage: React.FC = () => {
+  const navigate = useNavigate();
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isPlaying, setIsPlaying] = useState(true);
 
@@ -33,10 +36,15 @@ const HomePage: React.FC = () => {
     }
   };
 
+  const handleStartAnalysis = () => {
+    navigate('/analysis');
+  };
+
   return (
     <div className={styles.container} ref={containerRef}>
       {/* Header Component */}
       <Header
+        onGetStartedClick={handleStartAnalysis}
         onScrollToAbout={() => scrollToSection('about')}
         onScrollToRDTeam={() => scrollToSection('rdteam')}
         onScrollToContact={() => scrollToSection('contact')}
@@ -50,19 +58,21 @@ const HomePage: React.FC = () => {
           <source src={MainVideo} type="video/mp4" />
           Your browser does not support the video tag.
         </video>
+
         {/* Scroll Indicator */}
         <div className={styles.scrollIndicator}>
           <MouseScrollIcon className={styles.mouseIcon} />
         </div>
-        {/* Floating Learn more Button và Our contact Button ở góc trái, Floating Video ở góc phải */}
+
+        {/* Floating Learn more Button and Our contact Button at the left, Floating Video at the right */}
         <div className={styles.floatingButtons}>
-          <button className={styles.learnMoreButton}>
+          <button className={styles.learnMoreButton} onClick={() => navigate('/maintenance-system')}>
             Learn more
           </button>
           <div className={styles.ourContactButton}>
             <span>Our contact:</span>
             <div className={styles.socialIcons}>
-              <a href="https://www.github.com/DTU-DevTeam/" target="_blank" rel="noopener noreferrer" className={`fab fa-github ${styles.githubIcon}`}></a>
+              <a href="https://github.com/DTU-DevTeam/CNN-Model-Comparison-Xray" target="_blank" rel="noopener noreferrer" className={`fab fa-github ${styles.githubIcon}`}></a>
               <a href="https://www.linkedin.com/in/tuan-leminh-tech/" target="_blank" rel="noopener noreferrer" className={`fab fa-linkedin ${styles.linkedinIcon}`}></a>
               <a href="https://www.instagram.com/le.mingtuann_17/" target="_blank" rel="noopener noreferrer" className={`fab fa-instagram ${styles.instagramIcon}`}></a>
             </div>
@@ -113,7 +123,11 @@ const HomePage: React.FC = () => {
         <h1>Contact Us</h1>
         <p>For inquiries, collaborations, or feedback, please contact us at <a href="mailto:contact@xraicnn.com">contact@xraicnn.com</a>.</p>
       </div>
-    </div>
+
+      {/* Footer Component */}
+      <Footer />
+
+    </div> // Đây là thẻ đóng của <div className={styles.container}>
   );
 };
 

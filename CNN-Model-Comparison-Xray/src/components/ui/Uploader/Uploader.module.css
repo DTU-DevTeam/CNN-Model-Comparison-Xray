@@ -1,0 +1,38 @@
+.uploadArea {
+  border: 2px dashed #d1d5db;
+  border-radius: 0.75rem;
+  padding: 2rem;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 0.2s, border-color 0.2s;
+}
+
+.uploadArea:hover {
+  border-color: #3b82f6;
+  background-color: #eff6ff;
+}
+
+.uploadIcon {
+  margin-left: auto;
+  margin-right: auto;
+  height: 3rem;
+  width: 3rem;
+  color: #9ca3af;
+}
+
+.uploadText {
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+  color: #4b5563;
+}
+
+.uploadLink {
+  font-weight: 600;
+  color: #256aeb;
+}
+
+.uploadHint {
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+  color: rgba(215, 110, 110, 0.3);
+}
