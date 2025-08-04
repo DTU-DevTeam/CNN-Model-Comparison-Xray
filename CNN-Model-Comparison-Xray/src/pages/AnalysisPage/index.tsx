@@ -1,16 +1,19 @@
-import React, { useState } from 'react';
+// src/pages/Analysis/index.tsx
+import React, { useRef, useState } from 'react';
 import styles from './AnalysisPage.module.css';
+import Header from '../../components/layout/Header';
+import Footer from '../../components/layout/Footer';
 import Uploader from '../../components/ui/Uploader/Uploader';
 
 const SAMPLE_IMAGES = [
-  { name: 'Normal X-Ray', url: 'https://placehold.co/600x800/222/FFF?text=Normal+X-Ray' },
-  { name: 'Nodule X-Ray', url: 'https://placehold.co/600x800/222/FFF?text=Nodule+X-Ray' },
-  { name: 'Pneumonia X-Ray', url: 'https://placehold.co/600x800/222/FFF?text=Pneumonia+X-Ray' },
+  { name: 'Normal', url: 'https://placehold.co/600x800/222/FFF?text=Normal+X-Ray' },
+  { name: 'Nodule', url: 'https://placehold.co/600x800/222/FFF?text=Nodule+X-Ray' },
+  { name: 'Pneumonia', url: 'https://placehold.co/600x800/222/FFF?text=Pneumonia+X-Ray' },
 ];
 
 const LoaderIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
+    <path d="M21 12a9 9 0 1 1-6.219-8.56" />
   </svg>
 );
 
@@ -35,8 +38,9 @@ interface AnalysisResult {
 }
 
 const AnalysisPage: React.FC = () => {
+  const containerRef = useRef<HTMLDivElement>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-  const [analysisTask, setAnalysisTask] = useState('detect');
+  const [analysisTask, setAnalysisTask] = useState<'detect' | 'segment'>('detect');
   const [analysisResult, setAnalysisResult] = useState<AnalysisResult | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -64,14 +68,17 @@ const AnalysisPage: React.FC = () => {
 
     setTimeout(() => {
       const isDetection = analysisTask === 'detect';
-      const mockResult = {
+      const mockResult: AnalysisResult = {
         modelUsed: isDetection ? 'YOLOv8' : 'U-Net++',
         processingTime: isDetection ? '~0.04s' : '~0.12s',
         accuracyScore: isDetection ? '0.92 (mAP)' : '0.95 (Dice)',
         outputUrl: previewUrl,
-        overlayData: isDetection 
-          ? [{ top: '40%', left: '55%', width: '15%', height: '12%' }, { top: '60%', left: '30%', width: '10%', height: '8%' }]
-          : { opacity: 0.4, clipPath: 'polygon(20% 60%, 80% 55%, 75% 90%, 25% 95%)' }
+        overlayData: isDetection
+          ? [
+              { top: '40%', left: '55%', width: '15%', height: '12%' },
+              { top: '60%', left: '30%', width: '10%', height: '8%' }
+            ]
+          : { opacity: 0.4, clipPath: 'polygon(20% 60%, 80% 55%, 75% 90%, 25% 95%)' },
       };
       setAnalysisResult(mockResult);
       setIsLoading(false);
@@ -79,12 +86,12 @@ const AnalysisPage: React.FC = () => {
   };
 
   return (
-    <div className={styles.pageContainer}>
+    <div className={styles.pageContainer} ref={containerRef}>
+      <Header scrollContainerRef={containerRef} />
+
       <main className={styles.mainContent}>
-        {/* Control Panel */}
         <div className={styles.controlPanel}>
           <h2 className={styles.panelTitle}>Control Panel</h2>
-          
           <Uploader onFileSelect={handleFileSelect} />
 
           <div className={styles.section}>
@@ -108,7 +115,7 @@ const AnalysisPage: React.FC = () => {
                   name="analysisTask" 
                   value="detect"
                   checked={analysisTask === 'detect'}
-                  onChange={(e) => setAnalysisTask(e.target.value)}
+                  onChange={(e) => setAnalysisTask(e.target.value as 'detect' | 'segment')}
                   className={styles.radioInput}
                 />
                 <span>Detect Pulmonary Nodules (YOLOv8)</span>
@@ -119,7 +126,7 @@ const AnalysisPage: React.FC = () => {
                   name="analysisTask" 
                   value="segment"
                   checked={analysisTask === 'segment'}
-                  onChange={(e) => setAnalysisTask(e.target.value)}
+                  onChange={(e) => setAnalysisTask(e.target.value as 'detect' | 'segment')}
                   className={styles.radioInput}
                 />
                 <span>Segment Pneumonia (U-Net++)</span>
@@ -137,7 +144,6 @@ const AnalysisPage: React.FC = () => {
           </button>
         </div>
 
-        {/* Results Panel */}
         <div className={styles.resultsPanel}>
           <h2 className={styles.panelTitle}>Results</h2>
           <div className={styles.resultsContent}>
@@ -147,7 +153,6 @@ const AnalysisPage: React.FC = () => {
               </div>
             ) : (
               <div className={styles.comparisonGrid}>
-                {/* Original Image Column */}
                 <div className={styles.imageCard}>
                   <h3 className={styles.imageTitle}>Original Image</h3>
                   <div className={styles.imageWrapper}>
@@ -155,7 +160,6 @@ const AnalysisPage: React.FC = () => {
                   </div>
                 </div>
 
-                {/* AI Analysis Column */}
                 <div className={styles.imageCard}>
                   <h3 className={styles.imageTitle}>AI Analysis</h3>
                   <div className={`${styles.imageWrapper} ${styles.analysisWrapper}`}>
@@ -166,7 +170,7 @@ const AnalysisPage: React.FC = () => {
                     ) : (
                       <>
                         <img src={analysisResult?.outputUrl || previewUrl} alt="AI Analysis" className={styles.imageDisplay} />
-                        {analysisResult && analysisTask === 'detect' && Array.isArray(analysisResult.overlayData) && analysisResult.overlayData.map((box: BoundingBox, index: number) => (
+                        {analysisResult && analysisTask === 'detect' && Array.isArray(analysisResult.overlayData) && analysisResult.overlayData.map((box, index) => (
                           <div
                             key={index}
                             className={styles.boundingBox}
@@ -208,6 +212,8 @@ const AnalysisPage: React.FC = () => {
           </div>
         </div>
       </main>
+
+      <Footer />
     </div>
   );
 };

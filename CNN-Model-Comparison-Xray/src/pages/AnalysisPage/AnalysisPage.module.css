@@ -1,71 +1,81 @@
-/* General Page Layout */
+:root {
+  --primary-color: #2563eb;
+  --secondary-color: #1f2937;
+  --bg-light: #f9fafb;
+  --text-dark: #1f2937;
+  --text-light: #6b7280;
+  --font-main: "Oxanium", sans-serif;
+  --radius-md: 12px;
+  --shadow-soft: 0 10px 25px rgba(0, 0, 0, 0.05);
+}
+
+/* Layout */
 .pageContainer {
-  background-color: #f9fafb;
-  font-family: "Oxanium", sans-serif;
+  display: flex;
+  flex-direction: column;
+  margin-top: 95px;
   min-height: 100vh;
-  font-family: sans-serif;
-  color: #1f2937;
+  border-radius: 20px;
+  background-color: var(--bg-light);
+  font-family: var(--font-main);
+  color: var(--text-dark);
 }
 
 .mainContent {
+  flex: 1;
   display: grid;
-  grid-template-columns: repeat(1, minmax(0, 1fr));
+  grid-template-columns: 1fr;
   gap: 2rem;
-  max-width: 80rem;
-  margin: 2rem auto;
-  padding: 0 1rem;
+  max-width: 1280px;
+  margin: 3rem auto;
+  padding: 0 1.5rem;
 }
 
 @media (min-width: 1024px) {
   .mainContent {
-    grid-template-columns: repeat(12, minmax(0, 1fr));
+    grid-template-columns: 4fr 8fr;
   }
+}
+
+/* Panels */
+.controlPanel,
+.resultsPanel {
+  background: white;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-soft);
+  padding: 2rem;
 }
 
 .panelTitle {
-  font-size: 1.25rem;
-  font-weight: 600;
-  margin-bottom: 1rem;
-  padding-bottom: 0.75rem;
-  border-bottom: 1px solid #e5e7eb;
+  font-size: 1.5rem;
+  font-weight: 700;
+  border-bottom: 2px solid #e5e7eb;
+  padding-bottom: 1rem;
+  margin-bottom: 1.5rem;
 }
 
-/* Control Panel */
-.controlPanel {
-  grid-column: span 1 / span 1;
-  background-color: white;
-  padding: 1.5rem;
-  border-radius: 0.75rem;
-  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-}
-
-@media (min-width: 1024px) {
-  .controlPanel {
-    grid-column: span 4 / span 4;
-  }
-}
-
+/* Sections */
 .section {
-  margin-top: 1.5rem;
+  margin-top: 2rem;
 }
 
 .sectionTitle {
-  font-size: 0.875rem;
+  font-size: 1rem;
   font-weight: 600;
-  color: #4b5563;
+  color: var(--text-light);
   margin-bottom: 0.75rem;
 }
 
-/* Sample Images */
+/* Sample Image Grid */
 .sampleImagesGrid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 0.75rem;
+  grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+  gap: 1rem;
 }
 
 .sampleImage {
   cursor: pointer;
-  border-radius: 0.5rem;
+  text-align: center;
   transition: transform 0.2s;
 }
 
@@ -75,39 +85,37 @@
 
 .sampleImageThumb {
   width: 100%;
-  height: 6rem;
+  height: 90px;
   object-fit: cover;
-  border-radius: 0.375rem;
+  border-radius: 8px;
   border: 2px solid transparent;
 }
 
 .sampleImage:hover .sampleImageThumb {
-  border-color: #3b82f6;
+  border-color: var(--primary-color);
 }
 
 .sampleImageName {
-  text-align: center;
-  font-size: 0.75rem;
-  margin-top: 0.25rem;
-  font-weight: 500;
-  color: #4b5563;
+  font-size: 0.875rem;
+  color: var(--text-light);
+  margin-top: 0.5rem;
 }
 
-/* Radio Group */
+/* Radio Buttons */
 .radioGroup {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 1rem;
 }
 
 .radioLabel {
   display: flex;
   align-items: center;
-  padding: 0.75rem;
+  padding: 0.75rem 1rem;
   background-color: #f3f4f6;
-  border-radius: 0.5rem;
+  border-radius: 8px;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: background 0.3s ease;
 }
 
 .radioLabel:hover {
@@ -115,33 +123,27 @@
 }
 
 .radioInput {
-  height: 1rem;
-  width: 1rem;
-  color: #2563eb;
-  border-color: #d1d5db;
+  width: 16px;
+  height: 16px;
+  accent-color: var(--primary-color);
+  margin-right: 0.75rem;
 }
 
-.radioLabel span {
-  margin-left: 0.75rem;
-  font-size: 0.875rem;
-  font-weight: 500;
-}
-
-/* Analyze Button */
+/* Button */
 .analyzeButton {
+  margin-top: 2rem;
   width: 100%;
-  background-color: #2563eb;
+  background-color: var(--primary-color);
   color: white;
   font-weight: 700;
-  padding: 0.75rem 1rem;
-  border-radius: 0.5rem;
   border: none;
+  border-radius: 8px;
+  padding: 0.75rem;
   cursor: pointer;
-  margin-top: 2rem;
+  transition: background-color 0.3s ease;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background-color 0.2s;
 }
 
 .analyzeButton:hover {
@@ -156,25 +158,11 @@
 .loaderIcon {
   animation: spin 1s linear infinite;
   margin-right: 0.75rem;
-  height: 1.25rem;
-  width: 1.25rem;
+  width: 24px;
+  height: 24px;
 }
 
-/* Results Panel */
-.resultsPanel {
-  grid-column: span 1 / span 1;
-  background-color: white;
-  padding: 1.5rem;
-  border-radius: 0.75rem;
-  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-}
-
-@media (min-width: 1024px) {
-  .resultsPanel {
-    grid-column: span 8 / span 8;
-  }
-}
-
+/* Results */
 .resultsContent {
   width: 100%;
 }
@@ -185,66 +173,49 @@
   justify-content: center;
   height: 100%;
   min-height: 400px;
-  color: #6b7280;
+  border-radius: 8px;
   background-color: #f9fafb;
-  border-radius: 0.5rem;
+  color: var(--text-light);
 }
 
+/* Image Comparison Grid */
 .comparisonGrid {
   display: grid;
-  grid-template-columns: repeat(1, minmax(0, 1fr));
   gap: 1.5rem;
+  grid-template-columns: 1fr;
 }
 
 @media (min-width: 768px) {
   .comparisonGrid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: 1fr 1fr;
   }
 }
 
 .imageCard {
   display: flex;
   flex-direction: column;
+  align-items: center;
 }
 
 .imageTitle {
   font-size: 1.125rem;
   font-weight: 600;
-  margin-bottom: 0.75rem;
-  text-align: center;
+  margin-bottom: 1rem;
 }
 
 .imageWrapper {
-  background-color: #f3f4f6;
-  border-radius: 0.5rem;
-  overflow: hidden;
+  width: 100%;
   aspect-ratio: 3 / 4;
+  background: #f3f4f6;
+  border-radius: 8px;
   position: relative;
+  overflow: hidden;
 }
 
 .imageDisplay {
   width: 100%;
   height: 100%;
   object-fit: contain;
-}
-
-/* Analysis Overlays */
-.analysisWrapper {
-  position: relative;
-}
-
-.loadingOverlay {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-}
-
-.mainLoader {
-  height: 3rem;
-  width: 3rem;
-  color: #3b82f6;
-  animation: spin 1s linear infinite;
 }
 
 .boundingBox {
@@ -259,50 +230,44 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: #3b82f6;
+  background-color: rgba(37, 99, 235, 0.4);
+  clip-path: polygon(20% 60%, 80% 55%, 75% 90%, 25% 95%);
 }
 
 /* Info Box */
 .infoBox {
-  margin-top: 1.5rem;
-  background-color: #eff6ff;
+  margin-top: 2rem;
+  background: #eff6ff;
   border: 1px solid #bfdbfe;
-  border-radius: 0.5rem;
-  padding: 1rem;
+  border-radius: 8px;
+  padding: 1.5rem;
 }
 
 .infoTitle {
-  font-weight: 600;
-  font-size: 1.125rem;
-  margin-bottom: 0.75rem;
+  font-size: 1.25rem;
+  font-weight: 700;
   color: #1e3a8a;
+  margin-bottom: 1rem;
 }
 
 .infoGrid {
   display: grid;
-  grid-template-columns: repeat(1, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
   gap: 1rem;
 }
 
-@media (min-width: 640px) {
-  .infoGrid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-}
-
 .infoItem p {
-  font-weight: 500;
-  color: #6b7280;
   font-size: 0.875rem;
+  color: var(--text-light);
 }
 
 .infoItem span {
-  font-weight: 600;
   font-size: 1.125rem;
+  font-weight: 600;
   color: #1e40af;
 }
 
-/* Keyframes for spinning loader */
+/* Keyframes */
 @keyframes spin {
   from {
     transform: rotate(0deg);

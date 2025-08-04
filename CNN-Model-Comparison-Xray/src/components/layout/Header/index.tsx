@@ -55,7 +55,7 @@ const Header: React.FC<HeaderProps> = ({ onGetStartedClick, onScrollToAbout, onS
 
   return (
     <>
-      <nav className={styles.navbar}>
+      <nav className={`${styles.navbar} ${isHomePage ? styles.navbarAbsolute : ''}`}>
         <div className={styles.navContent}>
           <div className={styles.logo}>
             <a href="/" onClick={handleLogoClick}>
