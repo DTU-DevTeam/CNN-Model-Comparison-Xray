@@ -21,6 +21,14 @@
   color: var(--text-dark);
 }
 
+.headerContainer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+}
+
 .mainContent {
   flex: 1;
   display: grid;
@@ -205,7 +213,8 @@
 
 .imageWrapper {
   width: 100%;
-  aspect-ratio: 3 / 4;
+  aspect-ratio: 1 / 1;
+  background-color: #f1f5f9;
   background: #f3f4f6;
   border-radius: 8px;
   position: relative;
@@ -220,8 +229,21 @@
 
 .boundingBox {
   position: absolute;
-  border: 2px solid #ef4444;
-  background-color: rgba(239, 68, 68, 0.1);
+  border: 1px solid #44caef;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.boundingBoxLabel {
+  position: absolute;
+  top: -27px;
+  left: 0;
+  background-color: #44caef;
+  color: white;
+  padding: 3px 6px;
+  font-size: 12px;
+  font-weight: 500;
+  border-radius: 4px;
+  white-space: nowrap;
 }
 
 .segmentationMask {
@@ -265,6 +287,126 @@
   font-size: 1.125rem;
   font-weight: 600;
   color: #1e40af;
+}
+
+.infoTitleContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.downloadButton {
+  background-color: #10b981;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.downloadButton:hover {
+  background-color: #059669;
+}
+
+.reportSection {
+  padding: 4rem 2rem;
+  background-color: #f0f4ff;
+  border-top: 1px solid #e5e7eb;
+}
+
+.reportContent {
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.reportTitle {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.reportDescription {
+  font-size: 1.1rem;
+  color: #6b7280;
+  margin-bottom: 2rem;
+}
+
+.reportButton {
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 1rem 2.5rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.reportButton:hover {
+  background: #1d4ed8;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.infoTitleContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+.downloadButton {
+  background-color: #10b981;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+.downloadButton:hover {
+  background-color: #059669;
+}
+.reportSection {
+  padding: 4rem 2rem;
+  background-color: #f0f4ff;
+  border-top: 1px solid #e5e7eb;
+}
+.reportContent {
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: center;
+}
+.reportTitle {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+.reportDescription {
+  font-size: 1.1rem;
+  color: #6b7280;
+  margin-bottom: 2rem;
+}
+.reportButton {
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 1rem 2.5rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.reportButton:hover {
+  background: #1d4ed8;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
 /* Keyframes */

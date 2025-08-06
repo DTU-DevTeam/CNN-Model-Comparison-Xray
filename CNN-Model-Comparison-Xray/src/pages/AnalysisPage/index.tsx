@@ -1,14 +1,32 @@
-// src/pages/Analysis/index.tsx
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState} from 'react';
 import styles from './AnalysisPage.module.css';
+
+// Import các hàm và thành phần cần thiết
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas'
 import Header from '../../components/layout/Header';
 import Footer from '../../components/layout/Footer';
 import Uploader from '../../components/ui/Uploader/Uploader';
+import ReportTemplate from '../../components/ui/ReportTemplate/ReportTemplate';
+import { analyzeImageWithAPI, type AnalysisApiResponse } from '../../services/analysisAPI';
 
-const SAMPLE_IMAGES = [
-  { name: 'Normal', url: 'https://placehold.co/600x800/222/FFF?text=Normal+X-Ray' },
-  { name: 'Nodule', url: 'https://placehold.co/600x800/222/FFF?text=Nodule+X-Ray' },
-  { name: 'Pneumonia', url: 'https://placehold.co/600x800/222/FFF?text=Pneumonia+X-Ray' },
+// Import các ảnh mẫu
+import yoloNormalSample from '../../assets/SAMPLEIMAGES/YOLOv8/Normal/1.3.6.1.4.1.14519.5.2.1.6279.6001.122914038048856168343065566972_slice38.png';
+import yoloNoduleSample from '../../assets/SAMPLEIMAGES/YOLOv8/Nodule/1.3.6.1.4.1.14519.5.2.1.6279.6001.187108608022306504546286626125_slice215.png';
+import unetNormalSample from '../../assets/SAMPLEIMAGES/U-Net/Normal/u-net.png';
+import unetPneumoniaSample from '../../assets/SAMPLEIMAGES/U-Net/Pneumonia/images.jpg';
+
+
+// --- CÁC HẰNG SỐ VÀ INTERFACE ---
+
+const YOLO_SAMPLES = [
+  { name: 'Normal', path: yoloNormalSample },
+  { name: 'Nodule', path: yoloNoduleSample },
+];
+
+const UNET_SAMPLES = [
+  { name: 'Normal', path: unetNormalSample },
+  { name: 'Pneumonia', path: unetPneumoniaSample },
 ];
 
 const LoaderIcon = (props: React.SVGProps<SVGSVGElement>) => (
@@ -22,6 +40,7 @@ interface BoundingBox {
   left: string;
   width: string;
   height: string;
+  confidence: number;
 }
 
 interface SegmentationMask {
@@ -29,67 +48,151 @@ interface SegmentationMask {
   clipPath: string;
 }
 
+interface Metric {
+  label: string;
+  value: string | number;
+}
+
 interface AnalysisResult {
   modelUsed: string;
   processingTime: string;
-  accuracyScore: string;
-  outputUrl: string | null;
+  metrics: Metric[];
   overlayData: BoundingBox[] | SegmentationMask;
 }
 
+// --- COMPONENT CHÍNH ---
+
 const AnalysisPage: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
+  const originalImageRef = useRef<HTMLImageElement>(null);
+
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [analysisTask, setAnalysisTask] = useState<'detect' | 'segment'>('detect');
   const [analysisResult, setAnalysisResult] = useState<AnalysisResult | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
+
+  // Hàm xử lý khi người dùng tải file lên
   const handleFileSelect = (file: File) => {
+    setSelectedFile(file); // Lưu file thật
+    setAnalysisResult(null);
+    
     const reader = new FileReader();
     reader.onloadend = () => {
       setPreviewUrl(reader.result as string);
-      setAnalysisResult(null);
     };
     reader.readAsDataURL(file);
   };
 
-  const handleSampleClick = (url: string) => {
-    setPreviewUrl(url);
+  // Hàm xử lý khi người dùng chọn ảnh mẫu
+  const handleSampleClick = async (path: string, name: string) => {
+    setPreviewUrl(path);
     setAnalysisResult(null);
+
+    // Chuyển đổi ảnh mẫu (từ import) thành đối tượng File để gửi đi
+    try {
+      const response = await fetch(path);
+      const blob = await response.blob();
+      const file = new File([blob], `${name.toLowerCase().replace(' ', '-')}.png`, { type: blob.type });
+      setSelectedFile(file);
+    } catch (error) {
+      console.error("Error converting sample image to file:", error);
+      setSelectedFile(null);
+    }
   };
 
-  const handleAnalyze = () => {
-    if (!previewUrl) {
-      alert("Please upload an image or select a sample image.");
+  // Hàm chính để gọi API và phân tích ảnh
+  const handleAnalyze = async () => {
+    if (!selectedFile) {
+      alert("Please upload an image or select a sample.");
       return;
     }
+
     setIsLoading(true);
     setAnalysisResult(null);
+    const startTime = performance.now();
 
-    setTimeout(() => {
-      const isDetection = analysisTask === 'detect';
-      const mockResult: AnalysisResult = {
-        modelUsed: isDetection ? 'YOLOv8' : 'U-Net++',
-        processingTime: isDetection ? '~0.04s' : '~0.12s',
-        accuracyScore: isDetection ? '0.92 (mAP)' : '0.95 (Dice)',
-        outputUrl: previewUrl,
-        overlayData: isDetection
-          ? [
-              { top: '40%', left: '55%', width: '15%', height: '12%' },
-              { top: '60%', left: '30%', width: '10%', height: '8%' }
+    try {
+      const result: AnalysisApiResponse = await analyzeImageWithAPI(selectedFile, analysisTask);
+      
+      const endTime = performance.now();
+      const processingTime = ((endTime - startTime) / 1000).toFixed(3);
+
+      let finalOverlayData: BoundingBox[] | SegmentationMask = [];
+
+      // Xử lý kết quả cho model YOLOv8
+      if (analysisTask === 'detect' && Array.isArray(result.overlayData)) {
+        finalOverlayData = result.overlayData.map(d => {
+          const [x_min_ratio, y_min_ratio, width_ratio, height_ratio] = d.box_percent;
+          // Chuyển đổi sang % cho CSS, dựa trên kích thước đầu vào của model (640x640)
+          return {
+            left: `${x_min_ratio * 100}%`,
+            top: `${y_min_ratio * 100}%`,
+            width: `${width_ratio * 100}%`,
+            height: `${height_ratio * 100}%`,
+            confidence: d.confidence,
+          };
+        });
+      }
+      // (Thêm logic cho U-Net sau này)
+
+      const finalResult: AnalysisResult = {
+        modelUsed: result.modelUsed,
+        processingTime: `~${processingTime}s`,
+        metrics: analysisTask === 'detect'
+          ? [ // Metrics cho YOLO
+              { label: 'Detections', value: `${finalOverlayData.length} found` },
+              { label: 'mAP Score', value: 'N/A' }
             ]
-          : { opacity: 0.4, clipPath: 'polygon(20% 60%, 80% 55%, 75% 90%, 25% 95%)' },
+          : [ // Metrics cho U-Net
+              { label: 'Dice Score', value: 'N/A' },
+              { label: 'IoU Score', value: 'N/A' }
+            ],
+        overlayData: finalOverlayData,
       };
-      setAnalysisResult(mockResult);
+      setAnalysisResult(finalResult);
+
+    } catch (e) {
+      console.error("Error during analysis:", e);
+      alert("An error occurred during API call. Please ensure the backend server is running.");
+    } finally {
       setIsLoading(false);
-    }, 2000);
+    }
   };
 
+  // Hàmđể tạo và tải báo cáo ảnh
+  const handleDownloadReport = () => {
+    // Tìm đến component ReportTemplate ẩn
+    const reportElement = document.getElementById("pdf-report");
+    if (!reportElement || !analysisResult) {
+      alert("Please analyze an image first to download a report.");
+      return;
+    }
+
+    html2canvas(reportElement).then((canvas) => {
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF({
+        orientation: 'portrait',
+        unit: 'px',
+        format: [canvas.width, canvas.height]
+      });
+      
+      pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
+      pdf.save(`report-${analysisResult.modelUsed.replace(' ', '-')}.pdf`);
+    });
+  };
+
+  // Phần JSX trả về giữ nguyên như trong tệp của bạn
   return (
     <div className={styles.pageContainer} ref={containerRef}>
-      <Header scrollContainerRef={containerRef} />
-
+      <div className={styles.headerContainer}>
+        {/* Header component */}
+        <Header/>
+      </div>
       <main className={styles.mainContent}>
+
+        {/* Control Panel */}
         <div className={styles.controlPanel}>
           <h2 className={styles.panelTitle}>Control Panel</h2>
           <Uploader onFileSelect={handleFileSelect} />
@@ -97,92 +200,91 @@ const AnalysisPage: React.FC = () => {
           <div className={styles.section}>
             <h3 className={styles.sectionTitle}>Or try with sample images:</h3>
             <div className={styles.sampleImagesGrid}>
-              {SAMPLE_IMAGES.map((img) => (
-                <div key={img.name} onClick={() => handleSampleClick(img.url)} className={styles.sampleImage}>
-                  <img src={img.url} alt={img.name} className={styles.sampleImageThumb} />
-                  <p className={styles.sampleImageName}>{img.name}</p>
-                </div>
-              ))}
+              {analysisTask === 'detect'
+                ? YOLO_SAMPLES.map((img) => (
+                    <div key={img.name} onClick={() => handleSampleClick(img.path, img.name)} className={styles.sampleImage}>
+                      <img src={img.path} alt={img.name} className={styles.sampleImageThumb} />
+                      <p className={styles.sampleImageName}>{img.name}</p>
+                    </div>
+                  ))
+                : UNET_SAMPLES.map((img) => (
+                    <div key={img.name} onClick={() => handleSampleClick(img.path, img.name)} className={styles.sampleImage}>
+                      <img src={img.path} alt={img.name} className={styles.sampleImageThumb} />
+                      <p className={styles.sampleImageName}>{img.name}</p>
+                    </div>
+                  ))
+              }
             </div>
           </div>
 
+          {/* Chọn mô hình phân tích */}
           <div className={styles.section}>
             <h3 className={styles.sectionTitle}>Choose a model for analysis:</h3>
             <div className={styles.radioGroup}>
               <label className={styles.radioLabel}>
-                <input 
-                  type="radio" 
-                  name="analysisTask" 
-                  value="detect"
-                  checked={analysisTask === 'detect'}
-                  onChange={(e) => setAnalysisTask(e.target.value as 'detect' | 'segment')}
-                  className={styles.radioInput}
-                />
+                <input type="radio" name="analysisTask" value="detect" checked={analysisTask === 'detect'} onChange={(e) => setAnalysisTask(e.target.value as 'detect' | 'segment')} className={styles.radioInput} />
                 <span>Detect Pulmonary Nodules (YOLOv8)</span>
               </label>
               <label className={styles.radioLabel}>
-                <input 
-                  type="radio" 
-                  name="analysisTask" 
-                  value="segment"
-                  checked={analysisTask === 'segment'}
-                  onChange={(e) => setAnalysisTask(e.target.value as 'detect' | 'segment')}
-                  className={styles.radioInput}
-                />
+                <input type="radio" name="analysisTask" value="segment" checked={analysisTask === 'segment'} onChange={(e) => setAnalysisTask(e.target.value as 'detect' | 'segment')} className={styles.radioInput} />
                 <span>Segment Pneumonia (U-Net++)</span>
               </label>
             </div>
           </div>
 
-          <button
-            onClick={handleAnalyze}
-            disabled={isLoading || !previewUrl}
-            className={styles.analyzeButton}
-          >
+          {/* Nút phân tích */}
+          <button onClick={handleAnalyze} disabled={isLoading || !previewUrl} className={styles.analyzeButton}>
             {isLoading && <LoaderIcon className={styles.loaderIcon} />}
             {isLoading ? 'Analyzing...' : 'Analyze Image'}
           </button>
         </div>
 
+        {/* Results Panel */}
         <div className={styles.resultsPanel}>
           <h2 className={styles.panelTitle}>Results</h2>
           <div className={styles.resultsContent}>
             {!previewUrl ? (
-              <div className={styles.placeholder}>
-                Please upload an image to see the results here.
-              </div>
+              <div className={styles.placeholder}>Please upload an image to see the results here.</div>
             ) : (
               <div className={styles.comparisonGrid}>
+                
+                {/* Original Image */}
                 <div className={styles.imageCard}>
                   <h3 className={styles.imageTitle}>Original Image</h3>
                   <div className={styles.imageWrapper}>
-                    <img src={previewUrl} alt="Original X-Ray" className={styles.imageDisplay} />
+                    <img ref={originalImageRef} src={previewUrl} alt="Original X-Ray" className={styles.imageDisplay} />
                   </div>
                 </div>
 
+                {/* AI Analysis Image */}
                 <div className={styles.imageCard}>
                   <h3 className={styles.imageTitle}>AI Analysis</h3>
-                  <div className={`${styles.imageWrapper} ${styles.analysisWrapper}`}>
+                  <div className={styles.imageWrapper}>
                     {isLoading ? (
-                      <div className={styles.loadingOverlay}>
-                        <LoaderIcon className={styles.mainLoader} />
+                      <div className={styles.placeholder}>
+                        <LoaderIcon className={styles.loaderIcon} style={{ animation: 'spin 1s linear infinite' }} />
+                        <p>Analyzing...</p>
                       </div>
                     ) : (
                       <>
-                        <img src={analysisResult?.outputUrl || previewUrl} alt="AI Analysis" className={styles.imageDisplay} />
+                        <img src={previewUrl} alt="AI Analysis" className={styles.imageDisplay} />
                         {analysisResult && analysisTask === 'detect' && Array.isArray(analysisResult.overlayData) && analysisResult.overlayData.map((box, index) => (
-                          <div
-                            key={index}
-                            className={styles.boundingBox}
-                            style={{ ...box }}
-                          ></div>
+                          <div 
+                            key={index} 
+                            className={styles.boundingBox} 
+                            style={{ 
+                              top: box.top, 
+                              left: box.left, 
+                              width: box.width, 
+                              height: box.height 
+                            }}
+                          >
+                            <div className={styles.boundingBoxLabel}>
+                              {box.confidence.toFixed(2)}
+                            </div>
+                          </div>
                         ))}
-                        {analysisResult && analysisTask === 'segment' && !Array.isArray(analysisResult.overlayData) && (
-                          <div
-                            className={styles.segmentationMask}
-                            style={{ ...analysisResult.overlayData }}
-                          ></div>
-                        )}
+                        {/* Thêm logic cho segmentation mask nếu cần */}
                       </>
                     )}
                   </div>
@@ -190,9 +292,15 @@ const AnalysisPage: React.FC = () => {
               </div>
             )}
 
+            {/* Info Box */}
             {analysisResult && !isLoading && (
               <div className={styles.infoBox}>
-                <h3 className={styles.infoTitle}>Detailed Information</h3>
+                <div className={styles.infoTitleContainer}>
+                  <h3 className={styles.infoTitle}>Detailed Information</h3>
+                  <button onClick={handleDownloadReport} className={styles.downloadButton}>
+                    Download Report
+                  </button>
+                </div>
                 <div className={styles.infoGrid}>
                   <div className={styles.infoItem}>
                     <p>Model Used</p>
@@ -202,10 +310,12 @@ const AnalysisPage: React.FC = () => {
                     <p>Processing Time</p>
                     <span>{analysisResult.processingTime}</span>
                   </div>
-                  <div className={styles.infoItem}>
-                    <p>Accuracy Score</p>
-                    <span>{analysisResult.accuracyScore}</span>
-                  </div>
+                  {analysisResult.metrics.map((metric, index) => (
+                    <div key={index} className={styles.infoItem}>
+                      <p>{metric.label}</p>
+                      <span>{metric.value}</span>
+                    </div>
+                  ))}
                 </div>
               </div>
             )}
@@ -213,7 +323,34 @@ const AnalysisPage: React.FC = () => {
         </div>
       </main>
 
+      {/* Khu vực báo cáo chiến lược mới */}
+      <section className={styles.reportSection}>
+        <div className={styles.reportContent}>
+          <h2 className={styles.reportTitle}>Strategic Project Report</h2>
+          <p className={styles.reportDescription}>
+            Generate a comprehensive technical report analyzing the performance of U-Net and YOLO,
+            providing a data-driven recommendation for future product development.
+          </p>
+          <button 
+            className={styles.reportButton}
+            onClick={() => alert("This feature will generate the final technical report comparing YOLO and U-Net performance metrics (mAP, FPS, Dice, IoU).")}
+          >
+            Generate Full Technical Report
+          </button>
+        </div>
+      </section>      
+
       <Footer />
+
+      {/* Component ẩn để tạo PDF */}
+      <div style={{ position: 'absolute', left: '-2000px', top: 0, zIndex: -1 }}>
+        {analysisResult && previewUrl && (
+          <ReportTemplate 
+            analysisResult={analysisResult} 
+            originalImage={previewUrl} 
+          />
+        )}
+      </div>
     </div>
   );
 };

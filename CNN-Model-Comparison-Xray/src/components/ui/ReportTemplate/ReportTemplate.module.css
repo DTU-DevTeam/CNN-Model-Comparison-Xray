@@ -1,0 +1,101 @@
+.reportContainer {
+  width: 800px;
+  padding: 40px;
+  font-family: Arial, sans-serif;
+  background: white;
+  color: black;
+  box-sizing: border-box;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  border-bottom: 2px solid #eeeeee;
+  padding-bottom: 20px;
+  margin-bottom: 30px;
+}
+
+.logo {
+  width: 120px;
+  margin-right: 20px;
+}
+
+.header h1 {
+  font-size: 28px;
+  margin: 0;
+}
+
+.imageComparison {
+  display: flex;
+  gap: 30px;
+  margin-bottom: 30px;
+}
+
+.imageBox {
+  flex: 1;
+  text-align: center;
+}
+
+.imageBox h3 {
+  font-size: 18px;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.imageBox img {
+  max-width: 100%;
+  border: 1px solid #dddddd;
+  border-radius: 8px;
+}
+
+.analysisImageWrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.boundingBox {
+  position: absolute;
+  border: 2px solid red;
+}
+
+.boundingBoxLabel {
+  position: absolute;
+  top: -20px;
+  left: -2px;
+  background-color: red;
+  color: white;
+  padding: 2px 5px;
+  font-size: 10px;
+  border-radius: 3px;
+  white-space: nowrap;
+}
+
+.infoSection {
+  border-top: 1px solid #eeeeee;
+  padding-top: 20px;
+}
+
+.infoSection h3 {
+  font-size: 18px;
+  margin-bottom: 15px;
+}
+
+.infoGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  font-size: 14px;
+}
+
+.infoGrid p {
+  margin: 4px 0;
+}
+
+.footer {
+  margin-top: 40px;
+  padding-top: 20px;
+  border-top: 2px solid #eeeeee;
+  text-align: center;
+  font-size: 12px;
+  color: #888888;
+}

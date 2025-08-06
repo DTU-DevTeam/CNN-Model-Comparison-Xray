@@ -133,7 +133,7 @@
 /* Menu Toggle Button */
 .menuToggle {
   position: absolute;
-  left: 80%;
+  right: 270px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -153,11 +153,11 @@
 .Menu {
   position: fixed;
   top: 75px;
-  left: 72%;
+  right: 200px;
   transform: translateX(-50%) scale(0.9);
   width: 200px;
   max-width: 200px;
-  background: rgba(116, 135, 248, 0.8);
+  background: rgba(116, 135, 248, 0.5);
   backdrop-filter: blur(15px);
   border: 1px solid rgba(6, 138, 253, 0.3);
   border-radius: 12px;
@@ -184,6 +184,13 @@
   justify-content: center;
   gap: 0.5rem;
   text-align: center;
+}
+
+.scrolled {
+  background-color: rgba(0, 0, 0, 0.85);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  border-radius: 0 0 30px 30px;
 }
 
 /* Desktop Menu Styles */

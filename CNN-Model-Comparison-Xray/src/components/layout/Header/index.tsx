@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from './Header.module.css';
 import Logo from '../../../assets/xraimain.svg';
-import { BackToTop } from '../../ui/BackToTop/BackToTop'; 
+import { BackToTop } from '../../ui/BackToTop/BackToTop';
 import { MenuToCloseIcon, CloseToMenuIcon } from '../../ui/Icons';
 import GreetingText from '../../ui/GreetingText';
 import { useNavigate } from 'react-router-dom';
@@ -17,6 +17,7 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({ onGetStartedClick, onScrollToAbout, onScrollToRDTeam, onScrollToContact, isHomePage, scrollContainerRef }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
   const navigate = useNavigate();
 
   const toggleMenu = () => {
@@ -53,9 +54,27 @@ const Header: React.FC<HeaderProps> = ({ onGetStartedClick, onScrollToAbout, onS
     }
   };
 
+  useEffect(() => {
+  const container = scrollContainerRef?.current || window;
+
+  const handleScrollEvent = () => {
+    const scrollTop = container instanceof Window
+      ? window.scrollY
+      : (container as HTMLElement).scrollTop;
+
+    setIsScrolled(scrollTop > 10);
+  };
+
+  container.addEventListener('scroll', handleScrollEvent);
+  return () => container.removeEventListener('scroll', handleScrollEvent);
+}, [scrollContainerRef]);
+
   return (
     <>
-      <nav className={`${styles.navbar} ${isHomePage ? styles.navbarAbsolute : ''}`}>
+      <nav className={`${styles.navbar} ${isHomePage ? styles.navbarAbsolute : ''}${
+          isScrolled ? styles.scrolled : ''
+        }`}
+      >
         <div className={styles.navContent}>
           <div className={styles.logo}>
             <a href="/" onClick={handleLogoClick}>

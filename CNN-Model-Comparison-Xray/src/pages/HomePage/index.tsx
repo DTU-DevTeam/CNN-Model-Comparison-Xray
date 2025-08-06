@@ -16,7 +16,6 @@ const HomePage: React.FC = () => {
   const aboutRef = useRef<HTMLDivElement>(null);
   const rdTeamRef = useRef<HTMLDivElement>(null);
   const contactRef = useRef<HTMLDivElement>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
 
   const scrollToSection = (section: 'about' | 'rdteam' | 'contact') => {
     if (section === 'about' && aboutRef.current) aboutRef.current.scrollIntoView({ behavior: 'smooth' });
@@ -41,20 +40,19 @@ const HomePage: React.FC = () => {
   };
 
   return (
-    <>
+
+
+    <>    
       {/* Header Component */}
-      <div className={styles.headerContainer}>
-        <Header
-          onGetStartedClick={handleStartAnalysis}
-          onScrollToAbout={() => scrollToSection('about')}
-          onScrollToRDTeam={() => scrollToSection('rdteam')}
-          onScrollToContact={() => scrollToSection('contact')}
-          isHomePage={true}
-          scrollContainerRef={containerRef}
-        />
-      </div>
-        
-      <div className={styles.container} ref={containerRef}>
+      <Header
+        onGetStartedClick={handleStartAnalysis}
+        onScrollToAbout={() => scrollToSection('about')}
+        onScrollToRDTeam={() => scrollToSection('rdteam')}
+        onScrollToContact={() => scrollToSection('contact')}
+        isHomePage={true}
+      />
+      
+      <div className={styles.container}>
 
         {/* Main Content - Video Full Height */}
         <div className={styles.videoContainer}>
@@ -111,21 +109,21 @@ const HomePage: React.FC = () => {
         </div>
 
         {/* About Project Section */}
-        <div ref={aboutRef} style={{ padding: 32, background: '#f7f7fa' }}>
+        <div ref={aboutRef} style={{ padding: 32, background: '#f7f7fa', fontFamily: 'Oxanium, sans-serif'  }}>
           <h1>About the Project</h1>
           <p>This project is a research and comparison of CNN models for X-ray image analysis. It aims to provide insights into model performance and practical applications in medical imaging.</p>
         </div>
 
         {/* RD Team Section */}
-        <div ref={rdTeamRef} style={{ padding: 32, background: '#f0f4ff' }}>
+        <div ref={rdTeamRef} style={{ padding: 32, background: '#f0f4ff', fontFamily: 'Oxanium, sans-serif'  }}>
           <h1>R&D Team</h1>
           <p>Our Research & Development team consists of passionate AI researchers and engineers dedicated to advancing medical imaging technology.</p>
         </div>
 
         {/* Contact Us Section */}
-        <div ref={contactRef} style={{ padding: 32, background: '#f7f7fa' }}>
+        <div ref={contactRef} style={{ padding: 32, background: '#f7f7fa', fontFamily: 'Oxanium, sans-serif' }}>
           <h1>Contact Us</h1>
-          <p>For inquiries, collaborations, or feedback, please contact us at <a href="mailto:contact@xraicnn.com">contact@xraicnn.com</a>.</p>
+          <p>For inquiries, collaborations, or feedback, please contact us at <a href="mailto:contact@xraicnn.com">services_xraicnn@aipioneers.com</a>.</p>
         </div>
 
         {/* Footer Component */}
