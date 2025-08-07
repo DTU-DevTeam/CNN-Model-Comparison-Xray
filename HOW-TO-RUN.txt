@@ -61,7 +61,7 @@ Bạn cần mở **HAI (2)** cửa sổ terminal riêng biệt để chạy đ�
 **Cửa sổ Terminal 1: Chạy Backend**
 
 1. Di chuyển vào thư mục backend:
-   cd path/to/your/backend_api
+   cd .\backend_api\
 
 2. Kích hoạt môi trường ảo:
    .\venv\Scripts\activate

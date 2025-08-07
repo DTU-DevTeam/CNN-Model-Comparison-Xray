@@ -409,6 +409,18 @@
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
+.comparisonGridThree {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 1200px) {
+  .comparisonGridThree {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
 /* Keyframes */
 @keyframes spin {
   from {

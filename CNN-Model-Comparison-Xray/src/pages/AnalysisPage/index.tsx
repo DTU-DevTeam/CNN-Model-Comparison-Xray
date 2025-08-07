@@ -13,8 +13,8 @@ import { analyzeImageWithAPI, type AnalysisApiResponse } from '../../services/an
 // Import các ảnh mẫu
 import yoloNormalSample from '../../assets/SAMPLEIMAGES/YOLOv8/Normal/1.3.6.1.4.1.14519.5.2.1.6279.6001.122914038048856168343065566972_slice38.png';
 import yoloNoduleSample from '../../assets/SAMPLEIMAGES/YOLOv8/Nodule/1.3.6.1.4.1.14519.5.2.1.6279.6001.187108608022306504546286626125_slice215.png';
-import unetNormalSample from '../../assets/SAMPLEIMAGES/U-Net/Normal/0000a175-0e68-4ca4-b1af-167204a7e0bc.dcm';
-import unetPneumoniaSample from '../../assets/SAMPLEIMAGES/U-Net/Pneumonia/images.jpg';
+import unetNormalSample from '../../assets/SAMPLEIMAGES/U-Net/Normal/003d8fa0-6bf1-40ed-b54c-ac657f8495c5.png';
+import unetPneumoniaSample from '../../assets/SAMPLEIMAGES/U-Net/Pneumonia/00436515-870c-4b36-a041-de91049b9ab4.png';
 
 
 // --- CÁC HẰNG SỐ VÀ INTERFACE ---
@@ -43,21 +43,13 @@ interface BoundingBox {
   confidence: number;
 }
 
-interface SegmentationMask {
-  opacity: number;
-  clipPath: string;
-}
-
-interface Metric {
-  label: string;
-  value: string | number;
-}
-
 interface AnalysisResult {
   modelUsed: string;
   processingTime: string;
-  metrics: Metric[];
-  overlayData: BoundingBox[] | SegmentationMask;
+  metrics: { label: string; value: string | number; }[];
+  overlayData: BoundingBox[]; // YOLO
+  resultImageUrl?: string; // U-Net
+  heatmapImageUrl?: string; 
 }
 
 // --- COMPONENT CHÍNH ---
@@ -90,7 +82,6 @@ const AnalysisPage: React.FC = () => {
     setPreviewUrl(path);
     setAnalysisResult(null);
 
-    // Chuyển đổi ảnh mẫu (từ import) thành đối tượng File để gửi đi
     try {
       const response = await fetch(path);
       const blob = await response.blob();
@@ -104,57 +95,53 @@ const AnalysisPage: React.FC = () => {
 
   // Hàm chính để gọi API và phân tích ảnh
   const handleAnalyze = async () => {
-    if (!selectedFile) {
-      alert("Please upload an image or select a sample.");
-      return;
-    }
-
+    if (!selectedFile) return alert("Please upload an image or select a sample.");
+    
     setIsLoading(true);
     setAnalysisResult(null);
     const startTime = performance.now();
 
     try {
       const result: AnalysisApiResponse = await analyzeImageWithAPI(selectedFile, analysisTask);
-      
       const endTime = performance.now();
-      const processingTime = ((endTime - startTime) / 1000).toFixed(3);
+      const processingTime = `~${((endTime - startTime) / 1000).toFixed(3)}s`;
 
-      let finalOverlayData: BoundingBox[] | SegmentationMask = [];
+      let finalResult: AnalysisResult;
 
-      // Xử lý kết quả cho model YOLOv8
-      if (analysisTask === 'detect' && Array.isArray(result.overlayData)) {
-        finalOverlayData = result.overlayData.map(d => {
-          const [x_min_ratio, y_min_ratio, width_ratio, height_ratio] = d.box_percent;
-          // Chuyển đổi sang % cho CSS, dựa trên kích thước đầu vào của model (640x640)
-          return {
-            left: `${x_min_ratio * 100}%`,
-            top: `${y_min_ratio * 100}%`,
-            width: `${width_ratio * 100}%`,
-            height: `${height_ratio * 100}%`,
-            confidence: d.confidence,
-          };
-        });
+      if (analysisTask === 'detect' && result.overlayData) {
+        // Xử lý kết quả cho model YOLOv8
+        const finalOverlayData = result.overlayData.map(d => ({
+          left: `${d.box_percent[0] * 100}%`,
+          top: `${d.box_percent[1] * 100}%`,
+          width: `${d.box_percent[2] * 100}%`,
+          height: `${d.box_percent[3] * 100}%`,
+          confidence: d.confidence,
+        }));
+
+        finalResult = {
+          modelUsed: result.modelUsed,
+          processingTime,
+          metrics: [{ label: 'Detections', value: `${finalOverlayData.length} found` }],
+          overlayData: finalOverlayData,
+        };
+      } else if (analysisTask === 'segment' && result.overlay_image_base64) {
+        // Xử lý kết quả cho model U-Net
+        finalResult = {
+          modelUsed: result.modelUsed,
+          processingTime,
+          metrics: [{ label: 'Status', value: 'Segmentation Complete' }],
+          overlayData: [],
+          resultImageUrl: result.overlay_image_base64,
+          heatmapImageUrl: result.heatmap_image_base64,
+        };
+      } else {
+        throw new Error("Unexpected API response format");
       }
-      // (Thêm logic cho U-Net sau này)
 
-      const finalResult: AnalysisResult = {
-        modelUsed: result.modelUsed,
-        processingTime: `~${processingTime}s`,
-        metrics: analysisTask === 'detect'
-          ? [ // Metrics cho YOLO
-              { label: 'Detections', value: `${finalOverlayData.length} found` },
-              { label: 'mAP Score', value: 'N/A' }
-            ]
-          : [ // Metrics cho U-Net
-              { label: 'Dice Score', value: 'N/A' },
-              { label: 'IoU Score', value: 'N/A' }
-            ],
-        overlayData: finalOverlayData,
-      };
       setAnalysisResult(finalResult);
-
-    } catch (e) {
-      console.error("Error during analysis:", e);
+    
+    } catch (error) {
+      console.error("Error during analysis:", error);
       alert("An error occurred during API call. Please ensure the backend server is running.");
     } finally {
       setIsLoading(false);
@@ -182,6 +169,10 @@ const AnalysisPage: React.FC = () => {
       pdf.save(`report-${analysisResult.modelUsed.replace(' ', '-')}.pdf`);
     });
   };
+
+  const resultsGridClass = analysisTask === 'segment' && analysisResult?.heatmapImageUrl
+    ? styles.comparisonGridThree
+    : styles.comparisonGrid;
 
   // Phần JSX trả về giữ nguyên như trong tệp của bạn
   return (
@@ -246,7 +237,7 @@ const AnalysisPage: React.FC = () => {
             {!previewUrl ? (
               <div className={styles.placeholder}>Please upload an image to see the results here.</div>
             ) : (
-              <div className={styles.comparisonGrid}>
+              <div className={resultsGridClass}>
                 
                 {/* Original Image */}
                 <div className={styles.imageCard}>
@@ -267,8 +258,11 @@ const AnalysisPage: React.FC = () => {
                       </div>
                     ) : (
                       <>
-                        <img src={previewUrl} alt="AI Analysis" className={styles.imageDisplay} />
-                        {analysisResult && analysisTask === 'detect' && Array.isArray(analysisResult.overlayData) && analysisResult.overlayData.map((box, index) => (
+                        {/* Hiển thị ảnh kết quả phân tích */}
+                        <img src={analysisResult?.resultImageUrl || previewUrl} alt="AI Analysis" className={styles.imageDisplay} />
+
+                        {/* Hiển thị bounding boxes nếu là tác vụ detect */}
+                        {analysisResult && analysisTask === 'detect' && analysisResult.overlayData.map((box, index) => (
                           <div 
                             key={index} 
                             className={styles.boundingBox} 
@@ -284,11 +278,24 @@ const AnalysisPage: React.FC = () => {
                             </div>
                           </div>
                         ))}
-                        {/* Thêm logic cho segmentation mask nếu cần */}
                       </>
                     )}
                   </div>
                 </div>
+
+                {/* Heatmap Image for U-Net */}
+                {analysisTask === 'segment' && analysisResult?.heatmapImageUrl && (
+                  <div className={styles.imageCard}>
+                    <h3 className={styles.imageTitle}>AI Raw Output (Heatmap)</h3>
+                    <div className={styles.imageWrapper}>
+                      {isLoading ? (
+                        <div className={styles.placeholder}>...</div>
+                      ) : (
+                        <img src={analysisResult.heatmapImageUrl} alt="AI Heatmap" className={styles.imageDisplay} />
+                      )}
+                    </div>
+                  </div>
+                )}
               </div>
             )}
 

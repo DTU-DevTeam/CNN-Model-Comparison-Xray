@@ -1,15 +1,15 @@
 import axios from 'axios';
 
-// Định nghĩa kiểu dữ liệu cho Bounding Box trả về từ API
-interface ApiBoundingBox {
-  box_percent: [number, number, number, number];
-  confidence: number;
-}
-
 // Định nghĩa kiểu dữ liệu cho toàn bộ phản hồi từ API
 export interface AnalysisApiResponse {
   modelUsed: string;
-  overlayData: ApiBoundingBox[];
+  overlayData?: {
+    box_percent: number[];
+    confidence: number;
+  }[];
+
+  overlay_image_base64?: string;
+  heatmap_image_base64?: string;
 }
 
 const API_URL = 'http://127.0.0.1:8000/analyze';

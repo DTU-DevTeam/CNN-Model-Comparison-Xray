@@ -111,7 +111,7 @@ const IntroPage: React.FC = () => {
 
           {/* Subtitle with Zoom In, Pulse, and Typing Text Cycle */}
           <a
-            href="https://www.xraicnn.com"
+            href="http://localhost:3000/"
             target="_blank"
             rel="noopener noreferrer"
             className={`${styles.subtitle} ${showTitle ? styles.zoomIn : ''}`}
