@@ -13,7 +13,7 @@ import { analyzeImageWithAPI, type AnalysisApiResponse } from '../../services/an
 // Import các ảnh mẫu
 import yoloNormalSample from '../../assets/SAMPLEIMAGES/YOLOv8/Normal/1.3.6.1.4.1.14519.5.2.1.6279.6001.122914038048856168343065566972_slice38.png';
 import yoloNoduleSample from '../../assets/SAMPLEIMAGES/YOLOv8/Nodule/1.3.6.1.4.1.14519.5.2.1.6279.6001.187108608022306504546286626125_slice215.png';
-import unetNormalSample from '../../assets/SAMPLEIMAGES/U-Net/Normal/u-net.png';
+import unetNormalSample from '../../assets/SAMPLEIMAGES/U-Net/Normal/0000a175-0e68-4ca4-b1af-167204a7e0bc.dcm';
 import unetPneumoniaSample from '../../assets/SAMPLEIMAGES/U-Net/Pneumonia/images.jpg';
 
 

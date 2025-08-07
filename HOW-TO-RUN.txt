@@ -1,0 +1,96 @@
+================================================================================
+QUY TRÌNH CÀI ĐẶT VÀ CHẠY DỰ ÁN
+================================================================================
+
+[cite_start]Dự án: RESEARCH AND COMPARISON OF CNN MODELS (U-NET, YOLO) IN DIAGNOSING DISEASES THROUGH X-RAY IMAGES [cite: 8]
+[cite_start]Nhóm thực hiện: AI Pioneers [cite: 8]
+Ngày: 07/08/2025
+
+--------------------------------------------------------------------------------
+MÔ TẢ
+--------------------------------------------------------------------------------
+
+[cite_start]Dự án này là một sáng kiến Nghiên cứu và Phát triển (R&D) chiến lược nhằm xác định nền tảng công nghệ tối ưu cho dòng sản phẩm y tế thông minh trong tương lai bằng cách so sánh hiệu suất giữa hai mô hình CNN (YOLO và U-Net)[cite: 8]. [cite_start]Ứng dụng này là một nguyên mẫu phần mềm chức năng cho phép người dùng tải lên ảnh X-quang và nhận lại kết quả chẩn đoán từ mô hình AI[cite: 10].
+
+--------------------------------------------------------------------------------
+YÊU CẦU MÔI TRƯỜNG (Prerequisites)
+--------------------------------------------------------------------------------
+
+Trước khi bắt đầu, hãy đảm bảo bạn đã cài đặt các phần mềm sau:
+- Git
+- Node.js (phiên bản 18.x trở lên)
+- Python (phiên bản 3.10 trở lên) và Pip
+
+--------------------------------------------------------------------------------
+HƯỚNG DẪN CÀI ĐẶT (Setup)
+--------------------------------------------------------------------------------
+
+**Bước 1: Tải mã nguồn từ Repository**
+git clone <URL_repository_cua_ban>
+cd <ten_thu_muc_du_an>
+
+**Bước 2: Cài đặt Backend (Python API)**
+
+1. Di chuyển vào thư mục backend:
+   cd backend_api
+
+2. Sao chép model đã huấn luyện:
+   - Hãy sao chép file model `best.onnx` vào trong thư mục `backend_api` này.
+
+3. Tạo và kích hoạt môi trường ảo:
+   python -m venv venv
+   .\venv\Scripts\activate
+
+4. Cài đặt các thư viện cần thiết:
+   pip install "fastapi[all]" onnxruntime numpy Pillow python-multipart
+
+**Bước 3: Cài đặt Frontend (React App)**
+
+1. Di chuyển vào thư mục frontend:
+   cd ../src
+
+2. Cài đặt các gói phụ thuộc của Node.js:
+   npm install
+
+--------------------------------------------------------------------------------
+QUY TRÌNH CHẠY CHƯƠNG TRÌNH (Running the Application)
+--------------------------------------------------------------------------------
+
+Bạn cần mở **HAI (2)** cửa sổ terminal riêng biệt để chạy đồng thời cả Backend và Frontend.
+
+**Cửa sổ Terminal 1: Chạy Backend**
+
+1. Di chuyển vào thư mục backend:
+   cd path/to/your/backend_api
+
+2. Kích hoạt môi trường ảo:
+   .\venv\Scripts\activate
+
+3. Khởi động server API:
+   python -m uvicorn main:app --reload
+
+4. Kiểm tra: Bạn sẽ thấy dòng chữ `Uvicorn running on http://127.0.0.1:8000`.
+   **=> GIỮ NGUYÊN CỬA SỔ TERMINAL NÀY, KHÔNG TẮT ĐI.**
+
+**Cửa sổ Terminal 2: Chạy Frontend**
+
+1. Di chuyển vào thư mục frontend:
+   cd path/to/your/frontend
+
+2. Khởi động ứng dụng React:
+   npm run dev
+
+3. Kiểm tra: Bạn sẽ thấy một địa chỉ URL được cung cấp, thường là `http://localhost:5173`.
+
+**Bước cuối cùng: Sử dụng ứng dụng**
+
+1. Mở trình duyệt web của bạn.
+2. Truy cập vào địa chỉ URL của Frontend (ví dụ: `http://localhost:5173`).
+3. Giao diện trang web sẽ hiện ra và bạn có thể bắt đầu sử dụng.
+
+--------------------------------------------------------------------------------
+CẤU TRÚC DỰ ÁN
+--------------------------------------------------------------------------------
+
+- `/frontend`: Chứa toàn bộ mã nguồn của ứng dụng giao diện người dùng (React).
+- `/backend_api`: Chứa mã nguồn của server API (Python/FastAPI) để xử lý các mô hình AI.
